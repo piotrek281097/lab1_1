@@ -23,9 +23,7 @@ public class OfferItem {
 
     private int quantity;
 
-    private BigDecimal totalCost;
-
-    private String currency;
+    private Money totalCost;
 
     // discount
     private String discountCause;
@@ -48,20 +46,20 @@ public class OfferItem {
             discountValue = discountValue.add(discount);
         }
 
-        this.totalCost = productSnapshot.getPrice().multiply(new BigDecimal(quantity))
-                                     .subtract(discountValue);
+        this.totalCost.setValue(productSnapshot.getMoney().getValue().multiply(new BigDecimal(quantity))
+                                     .subtract(discountValue));
     }
 
     public ProductSnapshot getProductSnapshot() {
         return productSnapshot;
     }
 
-    public BigDecimal getTotalCost() {
+    public Money getTotalCost() {
         return totalCost;
     }
 
     public String getTotalCostCurrency() {
-        return currency;
+        return productSnapshot.getMoney().getCurrency();
     }
 
     public BigDecimal getDiscount() {
@@ -78,7 +76,7 @@ public class OfferItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(currency, discount, discountCause, productSnapshot, quantity, totalCost);
+        return Objects.hash(productSnapshot.getMoney().getCurrency(), discount, discountCause, productSnapshot, quantity, totalCost);
     }
 
     @Override
@@ -93,7 +91,7 @@ public class OfferItem {
             return false;
         }
         OfferItem other = (OfferItem) obj;
-        return Objects.equals(currency, other.currency)
+        return Objects.equals(productSnapshot.getMoney().getCurrency(), other.productSnapshot.getMoney().getCurrency())
                && Objects.equals(discount, other.discount)
                && Objects.equals(discountCause, other.discountCause)
                && Objects.equals(productSnapshot, other.productSnapshot)
@@ -124,11 +122,11 @@ public class OfferItem {
         BigDecimal max;
         BigDecimal min;
         if (totalCost.compareTo(other.totalCost) > 0) {
-            max = totalCost;
-            min = other.totalCost;
+            max = totalCost.getValue();
+            min = other.totalCost.getValue();
         } else {
-            max = other.totalCost;
-            min = totalCost;
+            max = other.totalCost.getValue();
+            min = totalCost.getValue();
         }
 
         BigDecimal difference = max.subtract(min);
