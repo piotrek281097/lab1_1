@@ -7,8 +7,7 @@ import java.util.Objects;
 public class ProductSnapshot {
 
     private String id;
-    //private BigDecimal price;
-    Money price;
+    private Money price;
     private String name;
     private Date snapshotDate;
     private String type;
